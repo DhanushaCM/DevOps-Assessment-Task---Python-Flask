@@ -1,0 +1,37 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      APP_HOST: 127.0.0.1
+      DATABASE_URI: mysql+pymysql://DBuser:123456@db:3306/DTapp
+      APP_PORT: 5000
+      REDIS_HOST: redis
+      REDIS_PORT: 6379  
+      DATABASE_URL: mysql://DBuser:123456@db:3306/DTapp
+      REDIS_URL: redis://redis:6379
+    restart: always
+    networks:
+      - task-network
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: DTapp123456
+      MYSQL_DATABASE: DTapp
+      MYSQL_USER: DBuser
+      MYSQL_PASSWORD: 123456
+    networks:
+      - task-network
+  redis:
+    image: redis:latest
+    ports:  
+       - '6739:6739'
+    networks:
+       - task-network    
+networks:
+  task-network:         
